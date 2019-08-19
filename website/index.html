@@ -1,0 +1,159 @@
+<head>
+<title>WovBot</title>
+<style>
+body{
+    background-color:#1e1e1e;
+    color:#fff;
+    font-family:Arial, Helvetica, sans-serif;
+}
+#wrapper{
+    width:90%;
+    margin:0 auto;
+}
+#wrapper p{
+    color:#3e3e3e;
+}
+#countdown{
+    text-align:center;
+    
+}
+#countdownalt{
+    position:fixed;
+    bottom:0;
+    left:0;
+    width:100%;
+    background-color:#5e5e5e;
+    z-index:100;
+}
+#logoarea{
+
+}
+#contentarea{
+
+}
+#contentarea h1{
+    text-align:center;
+}
+#contents{
+    padding:5px;
+    display:inline-block;
+    border-style:solid;
+    border-color:#2e2e2e;
+    width: 300px;
+}
+#contents a,a:visited,a:active{
+    color:#3e3e3e;
+}
+#contents a:hover{
+    color:#fff;
+}
+.section{
+    width:100%;
+    background-color:#3e3e3e;
+    margin-top:5px;
+    margin-bottom:5px;
+    padding: 5px;
+}
+.section p{
+    color:#fff!important;
+    margin-left:10%;margin-right:10%;
+}
+</style>
+</head>
+<body>
+        <script>
+                // Set the date we're counting down to
+                var countDownDate = new Date("Aug 26, 2019 23:00:00").getTime();
+                
+                // Update the count down every 1 second
+                var x = setInterval(function() {
+                
+                  // Get today's date and time
+                  var now = new Date().getTime();
+                
+                  // Find the distance between now and the count down date
+                  var distance = countDownDate - now;
+                
+                  // Time calculations for days, hours, minutes and seconds
+                  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                  // Display the result in the element with id="demo"
+                  document.getElementById("countdown").innerHTML = "WoW Classic Release In:<br>"+days + "d " + hours + "h "
+                  + minutes + "m " + seconds + "s";
+                
+                  // If the count down is finished, write some text 
+                  if (distance < 0) {
+                    clearInterval(x);
+                    document.getElementById("countdown").innerHTML = "EXPIRED";
+                  }
+                }, 1000);
+            </script>
+    <div id="wrapper">
+            <div id="countdown">
+
+            </div>
+            <div id="about">
+                <div id="logoarea">
+
+                </div>
+                <div id="contentarea">
+                    <h1>World of Vanilla Bot</h1>
+                    <center><p>A Discord bot made for WoW Classic.</p></center>
+                    <div id="contents">
+                        <h2>Contents</h2>
+                        <ul>
+                            <li><a href="#WoVBot">WoVBot</a></li>
+                            <ul>
+                                <li><a href="#aboutwovbot">About WoVBot</a></li>
+                                <li><a href="#wovbot-commands">WoVBot Commands</a></li>
+                            </ul>
+                            <li><a href="#LootCoin">LootCoin</a></li>
+                            <ul>
+                                <li><a href="#aboutlootcoin">About LootCoin</a></li>
+                                <li><a href="#lootcoin-commands">Lootcoin commands</a></li>
+                            </ul>
+                        </ul>
+                    </div>
+                    <div id="WoVBot">
+                            <div id="aboutwovbot" class="section">
+                                <h1>WovBot</h1>
+                                <p>World of Vanilla Bot was created as a modern tool to be used along side the WoW Classic experience.
+                                    We hope that guilds will find the bot useful as a modern alternative to DKP or other loot-rolling currencies, as well as a provider of in-game information
+                                    provided by the wow classic API.
+                                </p>
+                            </div>
+                            <div id="wovbot-commands" class="section">
+                                <h2>WoVBot General Commands:</h2>
+                                <ul>
+                                    <li><b>!setmain &lt;Character&gt;</b> - Used to associate your WoW Main with your discord account.  Must be done before any other WoVBot commands can be made.</li>
+                                    <li><b>!classicdb &lt;Database&gt; &lt;Name&gt;</b> - Returns the searched item/spell's tooltip.  Replace &lt;Database&gt; with Item to query items database, or Spell to query the spells database.</li>
+
+                                </ul>
+                            </div>
+                    </div>
+                    <div id="LootCoin">
+                            <div id="aboutlootcoin" class="section">
+                                <h1>Lootcoin</h1>
+                                <p>LootCoin is WoVBots modern approach to an alternative to DKP.  Since Vanilla, tecchies have happened upon blockchain technology.  And LootCoin is a
+                                    cryptocurrency designed exclusivley for WoW Classic which gives guild memebers bargaining chips in lue of items / services and of course, all important raid loot rolls.
+                                </p>
+                            </div>
+                            <div id="lootcoin-commands" class="section">
+                                <h2>LootCoin Commands:</h2>
+                                <ul>
+                                    <li><b>!dkp</b> - Returns your current DKP Balance.  Must have !setmain first.</li>
+                                    <li><b>!transfer &lt;@Mention&gt; &lt;Amount&gt;</b> - Transfers &lt;amount&gt; of dkp to the user mentioned.</li>
+                                </ul>
+                            </div>
+                    </div>
+                    <div id="#wowc-commands" class="section">
+
+                    </div>
+                </div>
+            </div>
+
+    </div>
+</body>
