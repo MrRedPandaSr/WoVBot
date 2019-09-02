@@ -8,7 +8,7 @@ import inspect
 prefix = "!"
 
 bot = commands.Bot(command_prefix=prefix)
-TOKEN = 'YOUR_DISCORD_TOKEN'
+TOKEN = 'YOUR BOT TOKEN'
 
 #Set bot to playing !command | WoW Classic.
 bot.activity=discord.Game('!command | WoWClassic')
@@ -60,9 +60,7 @@ async def on_member_join(member):
     '''
     Triggers when a member joins the discord
     '''
-    role = discord.utils.get(member.guild.roles, name="Peon")
-    #Assign peon role automatically.
-    await member.add_roles(role)
+    
     await member.send("```\nWelcome to the World of Vanilla Server!\nThe first thing you should do is set your WoW Character name by typing !setmain <Charname> in any channel.\n You can then view your DKP with !dkp or transfer it with !transfer <User> <Amount>. \n For more help and info, just type !help. \n```")
 
 

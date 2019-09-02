@@ -60,7 +60,7 @@ class Dkp(commands.Cog):
         '''
         usersout = '```\n'
         for user in self.users.users:
-            usersout += user.name+'\'s DKP Balance: '+ str(user.dkp) +' DKP\n'
+            usersout += user.wow_name+'\'s DKP Balance: '+ str(user.dkp) +' DKP\n'
         usersout += '```'
         await ctx.send(usersout)
     
@@ -91,6 +91,9 @@ class Dkp(commands.Cog):
         if saving:
             self.users.add_user(usr_id,usr_name,wow_name)
             await ctx.send('<@'+str(ctx.author.id)+'> your main has been set to '+ character)
+            role = discord.utils.get(ctx.author.guild.roles, name="Peon")
+            #Assign peon role automatically.
+            await ctx.author.add_roles(role)
     
       
     @commands.command()
@@ -101,7 +104,7 @@ class Dkp(commands.Cog):
         '''
         user = self.users.find_user(ctx.author.id)
         if user is not False:
-            await ctx.send('```\n'+user.name+'\'s DKP Balance:\n'+ str(user.dkp) +'\n```')
+            await ctx.send('```\n'+user.wow_name+'\'s DKP Balance:\n'+ str(user.dkp) +'\n```')
         else:
             print('Have you set your WoW Main character yet? Try !setmain <character>')
 
