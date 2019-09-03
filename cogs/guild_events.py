@@ -51,16 +51,33 @@ class GuildEvents(commands.Cog):
             #Should probably check user here to make sure they exist before adding to event.
             event.cancel_event()
             await ctx.send('The event has been cancelled.')
+        else:
+            await ctx.send('The event was not found')
   
 #End of admin only commands:----------------
 
-
     @commands.command()
     async def showEvent(self, ctx, event_id:int):
-       pass
+        '''
+        Shows details of the event from the given event ID
+        '''
+        event = self.events.find_event(event_id)
+        if event is not False:
+            out = "```\n"
+            out += str('Event Name: '+event.name+'\n'+'Starts: '+str(event.start_date)+'\n'+'Ends: '+str(event.end_date)+'\n'+'Slots: '+str(len(event.players))+'/'+str(event.max)+'\n'+'Description: '+event.description+'\n')
+            out += 'Players:\n'
+            for player in event.get_players:
+                out += '-'+player+'\n```'
+            await ctx.send(out)
+        else:
+            await ctx.send('Event was not found!')
+        
 
     @commands.command()
     async def showEvents(self, ctx):
+        '''
+        Shows details of all currently active events.
+        '''
         #Could format this to be an embed or a raid calendar.
         out = "```\n"
         out += str('ID\tEvent Name\tPlayers\tStarting\n')
@@ -72,6 +89,9 @@ class GuildEvents(commands.Cog):
     
     @commands.command()
     async def joinEvent(self, ctx, event_id:int):
+        '''
+        Joins the event from the given event ID.  Note this will only work if the player has !setmain'd
+        '''
         event = self.events.find_event(event_id)
         if event is not False:
             #Should probably check user here to make sure they exist before adding to event.
@@ -84,6 +104,9 @@ class GuildEvents(commands.Cog):
 
     @commands.command()
     async def leaveEvent(self, ctx, event_id:int):
+        '''
+        Removes the player from the given event if the player has joined the event.
+        '''
         event = self.events.find_event(event_id)
         if event is not False:
             #Should probably check user here to make sure they exist before adding to event.
