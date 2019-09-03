@@ -11,7 +11,7 @@ bot = commands.Bot(command_prefix=prefix)
 TOKEN = 'YOUR BOT TOKEN'
 
 #Set bot to playing !command | WoW Classic.
-bot.activity=discord.Game('!command | WoWClassic')
+bot.activity=discord.Game('!help for Commands | WoWClassic')
 
 #Init cogs from filepath
 path = 'cogs.'
