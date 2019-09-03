@@ -1,9 +1,9 @@
-## WoVBot
-A discord bot by swooperior
+# WoVBot
+A discord bot made for WoW Classic Guilds.  Made with <3 by Swooperior!
 
 ## Commands
 
-# DKP System
+### DKP System
 Admin / Officer Commands:
 !givedkp <@User> <Amt>
 Gives x dkp to the user.
@@ -26,7 +26,7 @@ Shows your current dkp balance
 !transferdkp <@User> <Amt>
 Transfers amount to the given user.
 
-# Guild Events System
+### Guild Events System
 Allows guild officers to create guild events (Raids, dungeon runs etc) and will notify players that join the event when the event is about to start.
 
 Administrator / Officer Commands:
@@ -50,7 +50,7 @@ Joins the event at the given ID.
 Removes you from the event at the given ID.
 
  
-# ClassicDB System (Originally by Mikestr8s)
+### ClassicDB System (Originally by Mikestr8s)
 The code contained in the ClassicDB cog is mostly writted by Mikestr8, however has been adapted and cogified by myself.
 
 Usage:
