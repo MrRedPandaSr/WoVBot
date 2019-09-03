@@ -83,7 +83,7 @@ class GuildEvents(commands.Cog):
         out += str('ID\tEvent Name\tPlayers\tStarting\n')
         for event in self.events.events:
             if event.status in range(0,1): # Selects events that haven't been completed or cancelled.
-                out += str(str(event.id) + '\t' + event.event_name +'\t'+ str(len(event.players)) + '/' + str(event.max)+'\t'+str(event.start_date)+'\n')
+                out += str(str(event.id) + '\t' + event.event_name +'\t'+ str(len(event.players)) + '/' + str(event.max)+'\t'+event.starting_in()+'\n')
         out += "```"
         await ctx.send(out)
     
