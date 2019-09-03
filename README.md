@@ -4,7 +4,7 @@ A discord bot made for WoW Classic Guilds.  Made with <3 by Swooperior!
 ## Commands
 
 ### DKP System
-Admin / Officer Commands:
+#### Admin / Officer Commands:
 !givedkp <@User> <Amt>
 Gives x dkp to the user.
 
@@ -15,7 +15,7 @@ Takes x dkp from the user.
 Shows all players DKP balances.
 
 ----------
-User Commands:
+#### User Commands:
 
 !setmain <Character Name>
 Sets the player's main toon name in the database.
@@ -29,7 +29,7 @@ Transfers amount to the given user.
 ### Guild Events System
 Allows guild officers to create guild events (Raids, dungeon runs etc) and will notify players that join the event when the event is about to start.
 
-Administrator / Officer Commands:
+#### Administrator / Officer Commands:
 
 !newEvent <Event Name> <Event start time> <Event end time> <Max Players> <Event Description>
 Returns the event ID after event has been created.
@@ -41,7 +41,7 @@ Cancels the event at the given ID.
 Completes the event at the given ID.
 
 ----------
-User Commands:
+#### User Commands:
 
 !joinEvent <Event ID>
 Joins the event at the given ID.
