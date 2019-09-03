@@ -13,7 +13,7 @@ class Events:
                 result = []
                 for event in events:
                     #Need to update result to event details.
-                    levent = Event(event['id'],event['event_name'],event['start_date'],event['end_date'],event['max'],event['description'],event['status'],event['players'])
+                    levent = Event(event['id'],event['event_name'],event['start_date'],event['end_date'],int(event['max']),event['description'],int(event['status']),event['players'])
                     result.append(levent)
                 return result
         except(IOError,IndexError):
@@ -27,6 +27,9 @@ class Events:
                 nevents.append(event_dict)
             json.dump(nevents,f)
 
+
+
+
     def add_event(self,name,start_date,end_date,max=None,description=""):
         new_event = Event(len(self.events),name,start_date,end_date,max,description)
         self.events.append(new_event)
@@ -39,6 +42,16 @@ class Events:
             if player not in event.players:
                 event.players.append(player)
                 self.save_events()
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def finish_event(self, event_id):
+        event = self.find_event(event_id)
+        event.finish_event()
+        self.save_events()
 
     def leave_event(self,event_id,player):
         event = self.find_event(event_id)

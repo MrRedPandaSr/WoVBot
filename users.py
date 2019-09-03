@@ -49,4 +49,19 @@ class Users:
             return user
         else:
             return False
+
+    def find_user_w(self,wow_name:str):
+        '''
+        Takes wow_name as a string as input, wraps it in mention syntax to check against database
+        And returns the user if the user was found, false otherwise.
+        '''
+        found = False
+        for user in self.users:
+            if user.wow_name == (wow_name):
+                found = True
+                break
+        if found:
+            return user
+        else:
+            return False
             

@@ -6,11 +6,15 @@ from events import Events
 import asyncio
 from users import Users
 
+
 class GuildEvents(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.events = Events('events.dat')
-        self.users = Users('users.dat')
+        #Requires the DKP Cog!
+        dkp = bot.get_cog('Dkp')
+        self.users = dkp.users
+        ##
         bot.loop.create_task(self.auto_load())
     
     
@@ -45,6 +49,29 @@ class GuildEvents(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
+    async def completeEvent(self, ctx, event_id:int):
+        dkp_reward = 50
+        event = self.events.find_event(event_id)
+        if event is not False:
+            #Should probably check user here to make sure they exist before adding to event.
+            event.finish_event()
+            await ctx.send('The event has finished.  Attendance DKP will now be distributed...')
+            out = ''
+            for player in event.players:
+                user = self.users.find_user_w(player)
+                if user is not False:
+                    user.dkp += dkp_reward
+                    out += str(dkp_reward)+'DKP Awarded to '+player+' for attending '+event.event_name+'.\n'
+                else:
+                    out += 'User not found \n'
+            self.users.save_users()
+            self.events.save_events()
+            await ctx.send(out)
+        else:
+            await ctx.send('The event was not found')
+    
+    @commands.command()
+    @commands.has_permissions(administrator=True)
     async def cancelEvent(self, ctx, event_id:int):
         event = self.events.find_event(event_id)
         if event is not False:
@@ -64,10 +91,11 @@ class GuildEvents(commands.Cog):
         event = self.events.find_event(event_id)
         if event is not False:
             out = "```\n"
-            out += str('Event Name: '+event.name+'\n'+'Starting in: '+str(event.starting_in())+'\n'+'Slots: '+str(len(event.players))+'/'+str(event.max)+'\n'+'Description: '+event.description+'\n')
-            out += 'Players:\n'
-            for player in event.get_players:
-                out += '-'+player+'\n```'
+            out += str('Event Name: '+event.event_name+'\n'+'Starting in: '+str(event.starting_in())+'\n'+'Description: '+event.description+'\n')
+            out += 'Players: '+str(len(event.players))+'/'+str(event.max)+'\n'
+            for player in event.get_players():
+                out += '[+] '+player+'\n'
+            out += '```'
             await ctx.send(out)
         else:
             await ctx.send('Event was not found!')
@@ -95,12 +123,19 @@ class GuildEvents(commands.Cog):
         event = self.events.find_event(event_id)
         player = self.users.find_user(ctx.author.id)
         if event is not False and player is not False:
-            player = player.wow_name
-            self.events.join_event(event_id,player)
-            out = 'You have joined the event: '+str(event.event_name)+'\n'
-            out += str('```ID\tEvent Name\tPlayers\tStarting\n')
-            out += str(str(event.id) + '\t' + event.event_name +'\t'+ str(len(event.players)) + '/' + str(event.max)+'\t'+str(event.start_date)+'\n```')
-            await ctx.send(out)
+            if len(event.players) < event.max:
+                player = player.wow_name
+                if self.events.join_event(event_id,player):
+                    out = 'You have joined the event: '+str(event.event_name)+'\n'
+                    out += str('```ID\tEvent Name\tPlayers\tStarting\n')
+                    out += str(str(event.id) + '\t' + event.event_name +'\t'+ str(len(event.players)) + '/' + str(event.max)+'\t'+str(event.start_date)+'\n```')
+                    await ctx.send(out)
+                else:
+                    await ctx.send('Something went wrong!')
+            else:
+                await ctx.send('Event is full, you cannot join!')
+        else:
+            await ctx.send('Either event was not found or you have not !setmain\'d')
 
     @commands.command()
     async def leaveEvent(self, ctx, event_id:int):

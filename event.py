@@ -9,7 +9,7 @@ class Event:
         self.end_date = end_date
         self.description = description
         self.max = max
-        self.status = 0 #0=reigstered, 1=active, 2=completed 3=cancelled
+        self.status = status #0=reigstered, 1=active, 2=completed 3=cancelled
         self.players = players
         if players == None:
             self.players = []
@@ -28,14 +28,14 @@ class Event:
         return self.players
 
     def starting_in(self):
-        dto = datetime.strptime(self.start_date, '%b %d %Y %I:%M%p')
+        dto = datetime.strptime(self.start_date, '%Y-%m-%d %H:%M:%S')
         timeleft = self.time_left(dto)
-        return 'Starting in: '+str(timeleft)
+        return str(timeleft)
 
     def ending_in(self):
-        dto = datetime.strptime(self.end_date, '%b %d %Y %I:%M%p')
+        dto = datetime.strptime(self.end_date, '%Y-%m-%d %H:%M:%S')
         timeleft = self.time_left(dto)
-        return 'Ending in: '+str(timeleft)
+        return str(timeleft)
     
 
     #Returns the given amount of time left in D/H/M/S.
@@ -43,13 +43,13 @@ class Event:
         '''
         Returns the amount of time remaining on the datetime obj.
         '''
-        now = datetime.datetime.now()
+        now = datetime.now()
         rd = relativedelta(now, datetime_obj)
         seconds = rd.seconds * -1
         minutes = rd.minutes * -1
         hours = rd.hours * -1
         days = rd.days * -1
-        out = "{}d, {}h, {}m, {}s".format(days, minutes, hours, seconds)
+        out = "{}d, {}h, {}m, {}s".format(days, hours, minutes, seconds)
         return(out)
 
 
