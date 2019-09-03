@@ -1,3 +1,6 @@
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
+
 class Event:
     def __init__(self,id,name,start_date,end_date,max=None,description="",status=0,players=None):
         self.id = id
@@ -24,5 +27,29 @@ class Event:
     def get_players(self):
         return self.players
 
-    def view_event(self):
-        pass
+    def starting_in(self):
+        dto = datetime.strptime(self.start_date, '%b %d %Y %I:%M%p')
+        timeleft = self.time_left(dto)
+        return 'Starting in: '+str(timeleft)
+
+    def ending_in(self):
+        dto = datetime.strptime(self.end_date, '%b %d %Y %I:%M%p')
+        timeleft = self.time_left(dto)
+        return 'Ending in: '+str(timeleft)
+    
+
+    #Returns the given amount of time left in D/H/M/S.
+    def time_left(self,datetime_obj):
+        '''
+        Returns the amount of time remaining on the datetime obj.
+        '''
+        now = datetime.datetime.now()
+        rd = relativedelta(now, datetime_obj)
+        seconds = rd.seconds * -1
+        minutes = rd.minutes * -1
+        hours = rd.hours * -1
+        days = rd.days * -1
+        out = "{}d, {}h, {}m, {}s".format(days, minutes, hours, seconds)
+        return(out)
+
+

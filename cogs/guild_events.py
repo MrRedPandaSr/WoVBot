@@ -64,7 +64,7 @@ class GuildEvents(commands.Cog):
         event = self.events.find_event(event_id)
         if event is not False:
             out = "```\n"
-            out += str('Event Name: '+event.name+'\n'+'Starts: '+str(event.start_date)+'\n'+'Ends: '+str(event.end_date)+'\n'+'Slots: '+str(len(event.players))+'/'+str(event.max)+'\n'+'Description: '+event.description+'\n')
+            out += str('Event Name: '+event.name+'\n'+'Starting in: '+str(event.starting_in())+'\n'+'Slots: '+str(len(event.players))+'/'+str(event.max)+'\n'+'Description: '+event.description+'\n')
             out += 'Players:\n'
             for player in event.get_players:
                 out += '-'+player+'\n```'
