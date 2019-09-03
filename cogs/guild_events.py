@@ -82,7 +82,7 @@ class GuildEvents(commands.Cog):
         out = "```\n"
         out += str('ID\tEvent Name\tPlayers\tStarting\n')
         for event in self.events.events:
-            if event.status in range(0,1):
+            if event.status in range(0,1): # Selects events that haven't been completed or cancelled.
                 out += str(str(event.id) + '\t' + event.event_name +'\t'+ str(len(event.players)) + '/' + str(event.max)+'\t'+str(event.start_date)+'\n')
         out += "```"
         await ctx.send(out)
@@ -93,9 +93,9 @@ class GuildEvents(commands.Cog):
         Joins the event from the given event ID.  Note this will only work if the player has !setmain'd
         '''
         event = self.events.find_event(event_id)
-        if event is not False:
-            #Should probably check user here to make sure they exist before adding to event.
-            player = self.users.find_user(ctx.author.id).wow_name
+        player = self.users.find_user(ctx.author.id)
+        if event is not False and player is not False:
+            player = player.wow_name
             self.events.join_event(event_id,player)
             out = 'You have joined the event: '+str(event.event_name)+'\n'
             out += str('```ID\tEvent Name\tPlayers\tStarting\n')
@@ -108,9 +108,10 @@ class GuildEvents(commands.Cog):
         Removes the player from the given event if the player has joined the event.
         '''
         event = self.events.find_event(event_id)
-        if event is not False:
+        player = self.users.find_user(ctx.author.id)
+        if event is not False and player is not False:
             #Should probably check user here to make sure they exist before adding to event.
-            player = self.users.find_user(ctx.author.id).wow_name
+            player = player.wow_name
             self.events.leave_event(event_id,player)
             await ctx.send('You have left the event: '+str(event.event_name))
 
