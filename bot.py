@@ -14,8 +14,10 @@ TOKEN = 'YOUR BOT TOKEN'
 bot.activity=discord.Game('!help for Commands | WoWClassic')
 
 #Init cogs from filepath
-path = 'cogs'
+path = 'cogs/'
 extensions = [x.replace('.py', '') for x in os.listdir(path) if x.endswith('.py')]
+extensions.sort()
+print(extensions)
 
 
 def load_extension(cog, path='cogs.'):

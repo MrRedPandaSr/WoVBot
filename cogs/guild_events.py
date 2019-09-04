@@ -1,7 +1,7 @@
 import os
 import discord
 from discord.ext import commands
-from datetime import datetime
+from datetime import datetime, timedelta
 from events import Events
 import asyncio
 from users import Users
@@ -10,11 +10,11 @@ from users import Users
 class GuildEvents(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.events = Events('events.dat')
+        self.events = Events("events.dat")
         #Requires the DKP Cog!
-        dkp = bot.get_cog('Dkp')
+        dkp = bot.get_cog("Dkp")
         self.users = dkp.users
-        ##
+        ##  
         bot.loop.create_task(self.auto_load())
     
     
@@ -23,6 +23,28 @@ class GuildEvents(commands.Cog):
         while not self.bot.is_closed:
             self.events.load_events()
             await asyncio.sleep(60)
+
+    def update_events(self,bot):
+        #dto of event start time 
+        for event in self.events.events:
+            dto_s = datetime.strptime(event.start_date, '%Y-%m-%d %H:%M:%S')
+            dto_f = datetime.strptime(event.end_date, '%Y-%m-%d %H:%M:%S')
+            if dto_s <= range(datetime.now(), datetime.now - timedelta(minutes=30)):
+                if event.status == 0:
+                    if len(event.players == event.max): 
+                        for player in event.players:
+                            user = self.users.find_user_w(player.wow_name)
+                            user = bot.get_user(user.id)
+                            await user.message("The event " + event.event_name + "Is starting in 30 minutes!\n Get online and prepare to battle!")
+                        await event.start_event()
+                        await self.events.save_events()
+                    else:
+                        return False
+                    #Not enough players to start event
+            if dto_f <= datetime.now():
+                #Sets event to complete but does not trigger dkp changes
+                event.finish_event()
+                self.events.save_events()
     
     #Admin/Gm/Lootmaster commands------------------
 

@@ -28,6 +28,7 @@ class Events:
             json.dump(nevents,f)
 
 
+    
 
 
     def add_event(self,name,start_date,end_date,max=None,description=""):
@@ -38,15 +39,17 @@ class Events:
 
     def join_event(self,event_id,player):
         event = self.find_event(event_id)
-        if len(event.players) < event.max:
-            if player not in event.players:
-                event.players.append(player)
-                self.save_events()
-                return True
+        if event.status == range(0,1):
+            if len(event.players) < event.max:
+                if player not in event.players:
+                    event.players.append(player)
+                    self.save_events()
+                    return True
+                else:
+                    return False
             else:
                 return False
-        else:
-            return False
+
 
     def finish_event(self, event_id):
         event = self.find_event(event_id)
