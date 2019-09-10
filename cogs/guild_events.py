@@ -32,7 +32,7 @@ class GuildEvents(commands.Cog):
             for event in self.events.events:
                 dto_s = datetime.datetime.strptime(str(event.start_date), '%Y-%m-%d %H:%M:%S')
                 dto_f = datetime.datetime.strptime(str(event.end_date), '%Y-%m-%d %H:%M:%S')
-                if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() <= dto_f:
+                if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() < dto_f:
                     if event.status == 0:
                         if len(event.players) == event.max: 
                             ##Make new voice channel for event
@@ -48,19 +48,24 @@ class GuildEvents(commands.Cog):
                                 userO = self.bot.get_user(userid)
                                 if userO != None:
                                     await userO.send("The event " + event.event_name + " is starting in "+event.starting_in()+"\n Get online and prepare to battle!\nJoin the voice channel here: "+inviteLinq.url)
+                            event.chan = nchannel.id
                             event.start_event()
                             self.events.save_events()
                             
                         else:
-                            event.status = 3
+                            event.cancel_event()
                             return False
                             #Not enough players to start event
-                
+                       
                     if dto_s <= (datetime.datetime.now() + datetime.timedelta(minutes=1)):
                         pass
                         #Event notification for event start?
                 
                 if dto_f <= datetime.datetime.now():
+                    if event.status == 1:
+                        channel = self.bot.get_channel(event.chan)
+                        print('Deleting channel...')
+                        await channel.delete(reason="The event has ended.")
                     #Sets event to complete but does not trigger dkp changes
                     event.finish_event()
                     self.events.save_events()
