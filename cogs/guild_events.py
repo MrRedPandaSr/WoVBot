@@ -33,6 +33,7 @@ class GuildEvents(commands.Cog):
                 dto_s = datetime.datetime.strptime(str(event.start_date), '%Y-%m-%d %H:%M:%S')
                 dto_f = datetime.datetime.strptime(str(event.end_date), '%Y-%m-%d %H:%M:%S')
                 if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() < dto_f:
+                    started = 0
                     if event.status == 0:
                         if len(event.players) == event.max: 
                             ##Make new voice channel for event
@@ -40,6 +41,7 @@ class GuildEvents(commands.Cog):
                             channel = channel.guild.categories[1]
                             nchannel = await channel.create_voice_channel(event.event_name,user_limit=event.max)
                             inviteLinq = await nchannel.create_invite(max_uses = event.max)
+                            
                             #channel = self.bot.get_channel(event.chan)
                             #await channel.send("The event " + event.event_name + " is starting in "+event.starting_in()+"\n Get online and prepare to battle!")
                             for player in event.players:
@@ -58,17 +60,26 @@ class GuildEvents(commands.Cog):
                             #Not enough players to start event
                        
                     if dto_s <= (datetime.datetime.now() + datetime.timedelta(minutes=1)):
-                        pass
+                        if started == 0:
+                            for player in event.players:
+                                    user = self.users.find_user_w(player)
+                                    userid = int(str(user.id)[2:-1])
+                                    userO = self.bot.get_user(userid)
+                                    if userO != None:
+                                        await userO.send("The event " + event.event_name + " is starting NOW!")
+                            started = 1
                         #Event notification for event start?
                 
                 if dto_f <= datetime.datetime.now():
                     if event.status == 1:
                         channel = self.bot.get_channel(event.chan)
                         print('Deleting channel...')
+                        event.finish_event()
                         await channel.delete(reason="The event has ended.")
+                        self.events.save_events()
                     #Sets event to complete but does not trigger dkp changes
-                    event.finish_event()
-                    self.events.save_events()
+                    
+            
             await asyncio.sleep(60)
     
     #Admin/Gm/Lootmaster commands------------------
