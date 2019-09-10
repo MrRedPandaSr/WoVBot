@@ -13,7 +13,7 @@ class Dkp(commands.Cog):
     
     async def auto_load(self):
         await self.bot.wait_until_ready()
-        while not self.bot.is_closed:
+        while True:
             self.users.load_users()
             await asyncio.sleep(60)
     

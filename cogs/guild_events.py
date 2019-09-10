@@ -1,7 +1,7 @@
 import os
 import discord
 from discord.ext import commands
-from datetime import datetime, timedelta
+import datetime
 from events import Events
 import asyncio
 from users import Users
@@ -16,35 +16,44 @@ class GuildEvents(commands.Cog):
         self.users = dkp.users
         ##  
         bot.loop.create_task(self.auto_load())
+        bot.loop.create_task(self.update_events())
     
     
     async def auto_load(self):
         await self.bot.wait_until_ready()
-        while not self.bot.is_closed:
+        while True:
             self.events.load_events()
             await asyncio.sleep(60)
 
-    def update_events(self,bot):
-        #dto of event start time 
-        for event in self.events.events:
-            dto_s = datetime.strptime(event.start_date, '%Y-%m-%d %H:%M:%S')
-            dto_f = datetime.strptime(event.end_date, '%Y-%m-%d %H:%M:%S')
-            if dto_s <= range(datetime.now(), datetime.now - timedelta(minutes=30)):
-                if event.status == 0:
-                    if len(event.players == event.max): 
-                        for player in event.players:
-                            user = self.users.find_user_w(player.wow_name)
-                            user = bot.get_user(user.id)
-                            await user.message("The event " + event.event_name + "Is starting in 30 minutes!\n Get online and prepare to battle!")
-                        await event.start_event()
-                        await self.events.save_events()
-                    else:
-                        return False
-                    #Not enough players to start event
-            if dto_f <= datetime.now():
-                #Sets event to complete but does not trigger dkp changes
-                event.finish_event()
-                self.events.save_events()
+    async def update_events(self):
+        await self.bot.wait_until_ready()
+        while True:
+            #dto of event start time 
+            for event in self.events.events:
+                dto_s = datetime.datetime.strptime(str(event.start_date), '%Y-%m-%d %H:%M:%S')
+                dto_f = datetime.datetime.strptime(str(event.end_date), '%Y-%m-%d %H:%M:%S')
+                if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() <= dto_f:
+                    if event.status == 0:
+                        if len(event.players) == event.max: 
+                            channel = self.bot.get_channel(event.chan)
+                            #await channel.send("The event " + event.event_name + " is starting in "+event.starting_in()+"\n Get online and prepare to battle!")
+                            for player in event.players:
+                                user = self.users.find_user_w(player)
+                                userid = int(str(user.id)[2:-1])
+                                userO = self.bot.get_user(userid)
+                                if userO != None:
+                                    await userO.send("The event " + event.event_name + " is starting in "+event.starting_in()+"\n Get online and prepare to battle!")
+                            event.start_event()
+                            self.events.save_events()
+                        else:
+                            event.status = 3
+                            return False
+                        #Not enough players to start event
+                if dto_f <= datetime.datetime.now():
+                    #Sets event to complete but does not trigger dkp changes
+                    event.finish_event()
+                    self.events.save_events()
+            await asyncio.sleep(60)
     
     #Admin/Gm/Lootmaster commands------------------
 
@@ -56,14 +65,14 @@ class GuildEvents(commands.Cog):
         Syntax is: !newEvent "Event Name" "Start Date/Time" "End Date/Time" "max number of people" "event description"
         Date/Time syntax should be as follows: 'Aug 26 2019  11:00PM'
         '''
-        start_date = str(datetime.strptime(start, '%b %d %Y %I:%M%p'))
-        end_date = str(datetime.strptime(end, '%b %d %Y %I:%M%p'))
+        start_date = str(datetime.datetime.strptime(start, '%b %d %Y %I:%M%p'))
+        end_date = str(datetime.datetime.strptime(end, '%b %d %Y %I:%M%p'))
 
 
         player = self.users.find_user(ctx.author.id).wow_name
         print(player)
         if player is not False:
-            new_event = self.events.add_event(name,start_date,end_date,max,desc)
+            new_event = self.events.add_event(ctx,name,start_date,end_date,max,desc)
             #self.events.join_event(new_event,player)
 
         #Return command to join the newly created event.
@@ -153,7 +162,7 @@ class GuildEvents(commands.Cog):
                     out += str(str(event.id) + '\t' + event.event_name +'\t'+ str(len(event.players)) + '/' + str(event.max)+'\t'+str(event.start_date)+'\n```')
                     await ctx.send(out)
                 else:
-                    await ctx.send('Something went wrong!')
+                    await ctx.send('Something went wrong!  Join_event returned false.')
             else:
                 await ctx.send('Event is full, you cannot join!')
         else:

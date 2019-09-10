@@ -13,7 +13,7 @@ class Events:
                 result = []
                 for event in events:
                     #Need to update result to event details.
-                    levent = Event(event['id'],event['event_name'],event['start_date'],event['end_date'],int(event['max']),event['description'],int(event['status']),event['players'])
+                    levent = Event(event['id'],event['chan'],event['event_name'],event['start_date'],event['end_date'],int(event['max']),event['description'],int(event['status']),event['players'])
                     result.append(levent)
                 return result
         except(IOError,IndexError):
@@ -28,27 +28,28 @@ class Events:
             json.dump(nevents,f)
 
 
-    
-
-
-    def add_event(self,name,start_date,end_date,max=None,description=""):
-        new_event = Event(len(self.events),name,start_date,end_date,max,description)
+    def add_event(self,ctx,name,start_date,end_date,max=None,description=""):
+        new_event = Event(len(self.events),ctx.channel.id,name,start_date,end_date,max,description)
         self.events.append(new_event)
         self.save_events()
         return new_event.id
 
     def join_event(self,event_id,player):
         event = self.find_event(event_id)
-        if event.status == range(0,1):
+        if event.status < 2:
             if len(event.players) < event.max:
                 if player not in event.players:
                     event.players.append(player)
                     self.save_events()
                     return True
                 else:
+                    print('Player was in event players')
                     return False
             else:
+                print('Event at max capacity.')
                 return False
+        else:
+            print(str(event.status)+' status.')
 
 
     def finish_event(self, event_id):

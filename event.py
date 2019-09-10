@@ -2,9 +2,9 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 class Event:
-    def __init__(self,ctx,id,name,start_date,end_date,max=None,description="",status=0,players=None):
+    def __init__(self,id,chan,name,start_date,end_date,max=None,description="",status=0,players=None):
         self.id = id
-        self.ctx = ctx
+        self.chan = chan
         self.event_name = name
         self.start_date = start_date
         self.end_date = end_date
@@ -17,7 +17,7 @@ class Event:
         
         
     def start_event(self):
-        self.satus = 1
+        self.status = 1
 
     def finish_event(self):
         self.status = 2
