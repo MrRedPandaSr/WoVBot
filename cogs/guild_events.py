@@ -35,20 +35,31 @@ class GuildEvents(commands.Cog):
                 if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() <= dto_f:
                     if event.status == 0:
                         if len(event.players) == event.max: 
+                            ##Make new voice channel for event
                             channel = self.bot.get_channel(event.chan)
+                            channel = channel.guild.categories[1]
+                            nchannel = await channel.create_voice_channel(event.event_name,user_limit=event.max)
+                            inviteLinq = await nchannel.create_invite(max_uses = event.max)
+                            #channel = self.bot.get_channel(event.chan)
                             #await channel.send("The event " + event.event_name + " is starting in "+event.starting_in()+"\n Get online and prepare to battle!")
                             for player in event.players:
                                 user = self.users.find_user_w(player)
                                 userid = int(str(user.id)[2:-1])
                                 userO = self.bot.get_user(userid)
                                 if userO != None:
-                                    await userO.send("The event " + event.event_name + " is starting in "+event.starting_in()+"\n Get online and prepare to battle!")
+                                    await userO.send("The event " + event.event_name + " is starting in "+event.starting_in()+"\n Get online and prepare to battle!\nJoin the voice channel here: "+inviteLinq.url)
                             event.start_event()
                             self.events.save_events()
+                            
                         else:
                             event.status = 3
                             return False
-                        #Not enough players to start event
+                            #Not enough players to start event
+                
+                    if dto_s <= (datetime.datetime.now() + datetime.timedelta(minutes=1)):
+                        pass
+                        #Event notification for event start?
+                
                 if dto_f <= datetime.datetime.now():
                     #Sets event to complete but does not trigger dkp changes
                     event.finish_event()
@@ -76,7 +87,7 @@ class GuildEvents(commands.Cog):
             #self.events.join_event(new_event,player)
 
         #Return command to join the newly created event.
-        await ctx.send('A new event has been created, join it by typing !joinEvent '+str(new_event))
+        await ctx.send('A new event has been created, join it by typing ```!joinEvent '+str(new_event)+'```')
 
     @commands.command()
     @commands.has_permissions(administrator=True)
@@ -122,7 +133,7 @@ class GuildEvents(commands.Cog):
         event = self.events.find_event(event_id)
         if event is not False:
             out = "```\n"
-            out += str('Event Name: '+event.event_name+'\n'+'Starting in: '+str(event.starting_in())+'\n'+'Description: '+event.description+'\n')
+            out += str('Event Name: '+event.event_name+'\n'+'Starts: '+str(event.start_date)+'\n'+'Description: '+event.description+'\n')
             out += 'Players: '+str(len(event.players))+'/'+str(event.max)+'\n'
             for player in event.get_players():
                 out += '[+] '+player+'\n'
