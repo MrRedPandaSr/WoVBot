@@ -30,10 +30,10 @@ class GuildEvents(commands.Cog):
         while True:
             #dto of event start time 
             for event in self.events.events:
+                started = 0
                 dto_s = datetime.datetime.strptime(str(event.start_date), '%Y-%m-%d %H:%M:%S')
                 dto_f = datetime.datetime.strptime(str(event.end_date), '%Y-%m-%d %H:%M:%S')
-                if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() < dto_f:
-                    started = 0
+                if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() < dto_f: 
                     if event.status == 0:
                         if len(event.players) == event.max: 
                             ##Make new voice channel for event
@@ -59,8 +59,9 @@ class GuildEvents(commands.Cog):
                             return False
                             #Not enough players to start event
                        
-                    if dto_s <= (datetime.datetime.now() + datetime.timedelta(minutes=1)):
+                    if dto_s <= datetime.datetime.now():
                         if started == 0:
+                            event.start_event()
                             for player in event.players:
                                     user = self.users.find_user_w(player)
                                     userid = int(str(user.id)[2:-1])
