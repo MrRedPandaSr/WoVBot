@@ -73,7 +73,7 @@ class GuildEvents(commands.Cog):
                     
             #TIME AFTER EVENT END
             if dto_f <= datetime.datetime.now():
-                if event.status == 1:
+                if event.status not in range(0,2):
                     channel = self.bot.get_channel(event.chan)
                     
                     event.finish_event()
@@ -115,16 +115,16 @@ class GuildEvents(commands.Cog):
     async def completeEvent(self, ctx, event_id:int):
         dkp_reward = 50
         event = self.events.find_event(event_id)
-        if event is not False:
+        if event is not False and event.status == 3:
             #Should probably check user here to make sure they exist before adding to event.
-            event.finish_event()
+            event.commit_event()
             await ctx.send('The event has finished.  Attendance DKP will now be distributed...')
             out = ''
             for player in event.players:
                 user = self.users.find_user_w(player)
                 if user is not False:
                     user.dkp += dkp_reward
-                    out += str(dkp_reward)+'DKP Awarded to '+player+' for attending '+event.event_name+'.\n'
+                    out += '<@'+user.id+'> '+str(dkp_reward)+' DKP Awarded to '+player+' for attending '+event.event_name+'.\n'
                 else:
                     out += 'User not found \n'
             self.users.save_users()
@@ -185,7 +185,7 @@ class GuildEvents(commands.Cog):
         '''
         event = self.events.find_event(event_id)
         player = self.users.find_user(ctx.author.id)
-        if event is not False and player is not False:
+        if event is not False and player is not False and event.status in range(0,2):
             if len(event.players) < event.max:
                 player = player.wow_name
                 if self.events.join_event(event_id,player):
@@ -213,6 +213,19 @@ class GuildEvents(commands.Cog):
             self.events.leave_event(event_id,player)
             await ctx.send('You have left the event: '+str(event.event_name))
 
-
+    @commands.command()
+    async def kickFromEvent(self, ctx, event_id:int, player:str):
+        ''' 
+        Removes the given WoW Name from the event if exists. 
+        '''
+        event = self.events.find_event(event_id)
+        if event.creator == ctx.author.id:
+            if player in event.players:
+                event.players.remove(player)
+                await ctx.send('Removed: '+player+' from '+event.event_name)
+            else:
+                await ctx.send('Player was not found in event.')
+        else:
+            await ctx.send('Only the event creator can do this.')
 def setup(bot):
     bot.add_cog(GuildEvents(bot))

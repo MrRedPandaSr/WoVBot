@@ -29,7 +29,7 @@ class Events:
 
 
     def add_event(self,ctx,name,start_date,end_date,max=None,description=""):
-        new_event = Event(len(self.events),ctx.channel.id,name,start_date,end_date,max,description)
+        new_event = Event(len(self.events),ctx.author.id,ctx.channel.id,name,start_date,end_date,max,description)
         self.events.append(new_event)
         self.save_events()
         return new_event.id

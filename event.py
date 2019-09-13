@@ -2,15 +2,16 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 class Event:
-    def __init__(self,id,chan,name,start_date,end_date,max=None,description="",status=0,players=None):
+    def __init__(self,id,creator,chan,name,start_date,end_date,max=None,description="",status=0,players=None):
         self.id = id
+        self.creator = creator
         self.chan = chan
         self.event_name = name
         self.start_date = start_date
         self.end_date = end_date
         self.description = description
         self.max = max
-        self.status = status #0=reigstered, 1=ready, 2=started 3=complete 4=cancelled
+        self.status = status #0=reigstered, 1=ready, 2=started 3=complete 4=committed, -1 = cancelled.
         self.players = players
         if players == None:
             self.players = []
@@ -24,8 +25,11 @@ class Event:
     def finish_event(self):
         self.status = 3
 
-    def cancel_event(self):
+    def commit_event(self):
         self.status = 4
+    
+    def cancel_event(self):
+        self.status = -1
 
     def get_players(self):
         return self.players
