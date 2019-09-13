@@ -28,14 +28,17 @@ class GuildEvents(commands.Cog):
 
     async def update_events(self):
         await self.bot.wait_until_ready()
-        #dto of event start time 
+        
+        #dto of event start / end times
         for event in self.events.events:
             dto_s = datetime.datetime.strptime(str(event.start_date), '%Y-%m-%d %H:%M:%S')
             dto_f = datetime.datetime.strptime(str(event.end_date), '%Y-%m-%d %H:%M:%S')
 
             #EVENT STARTS IN 30 ISH MINUTES NOTIFICATION
             if event.status == 0:
+                #If there is less than 30 minutes to event starting...
                 if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() < dto_f: 
+                    event.ready_event()
                     if len(event.players) == event.max: 
                         ##Make new voice channel for event
                         channel = self.bot.get_channel(event.chan)
@@ -52,15 +55,14 @@ class GuildEvents(commands.Cog):
                             if userO != None:
                                 await userO.send("The event " + event.event_name + " is starting in "+event.starting_in()+"\n Get online and prepare to battle!\nJoin the voice channel here: "+inviteLinq.url)
                         event.chan = nchannel.id
-                        self.events.save_events()
-                        
+                        self.events.save_events()    
                     else:
+                        #Not enough players to start event
                         event.cancel_event()
                         self.events.save_events()
-                        return False
-                        #Not enough players to start event
-                #EVENT START NOTIFICATION   
-                if dto_s <= datetime.datetime.now() and event.status == 0:
+                        return False         
+                #WHEN EVENT START TIME IS MET
+                if dto_s <= datetime.datetime.now() and event.status == 1:
                         event.start_event()
                         for player in event.players:
                                 user = self.users.find_user_w(player)
@@ -69,7 +71,7 @@ class GuildEvents(commands.Cog):
                                 if userO != None:
                                     await userO.send("The event " + event.event_name + " is starting NOW!")
                     
-            
+            #TIME AFTER EVENT END
             if dto_f <= datetime.datetime.now():
                 if event.status == 1:
                     channel = self.bot.get_channel(event.chan)
@@ -171,7 +173,7 @@ class GuildEvents(commands.Cog):
         out = "```\n"
         out += str('ID\tEvent Name\tPlayers\tStarting\n')
         for event in self.events.events:
-            if event.status in range(0,1): # Selects events that haven't been completed or cancelled.
+            if event.status in range(0,2): # Selects events that haven't been completed or cancelled.
                 out += str(str(event.id) + '\t' + event.event_name +'\t'+ str(len(event.players)) + '/' + str(event.max)+'\t'+event.starting_in()+'\n')
         out += "```"
         await ctx.send(out)

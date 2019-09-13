@@ -10,20 +10,22 @@ class Event:
         self.end_date = end_date
         self.description = description
         self.max = max
-        self.status = status #0=reigstered, 1=active, 2=completed 3=cancelled
+        self.status = status #0=reigstered, 1=ready, 2=started 3=complete 4=cancelled
         self.players = players
         if players == None:
             self.players = []
-        
-        
-    def start_event(self):
+              
+    def ready_event(self):
         self.status = 1
-
-    def finish_event(self):
+    
+    def start_event(self):
         self.status = 2
 
-    def cancel_event(self):
+    def finish_event(self):
         self.status = 3
+
+    def cancel_event(self):
+        self.status = 4
 
     def get_players(self):
         return self.players
