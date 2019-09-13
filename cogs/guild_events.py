@@ -61,28 +61,27 @@ class GuildEvents(commands.Cog):
                         event.cancel_event()
                         self.events.save_events()
                         return False         
-                #WHEN EVENT START TIME IS MET
-                if dto_s <= datetime.datetime.now() and event.status == 1:
-                        event.start_event()
-                        self.events.save_events
-                        for player in event.players:
-                                user = self.users.find_user_w(player)
-                                userid = int(str(user.id)[2:-1])
-                                userO = self.bot.get_user(userid)
-                                if userO != None:
-                                    await userO.send("The event " + event.event_name + " is starting NOW!")
+            #WHEN EVENT START TIME IS MET
+            if dto_s <= datetime.datetime.now() and event.status == 1:
+                    event.start_event()
+                    self.events.save_events()
+                    for player in event.players:
+                            user = self.users.find_user_w(player)
+                            userid = int(str(user.id)[2:-1])
+                            userO = self.bot.get_user(userid)
+                            if userO != None:
+                                await userO.send("The event " + event.event_name + " is starting NOW!")
                     
             #TIME AFTER EVENT END
             if dto_f <= datetime.datetime.now() and event.status == 2:
-                if event.status not in range(0,2):
-                    channel = self.bot.get_channel(event.chan)
-                    
-                    event.finish_event()
-                    self.events.save_events()
-                    if channel != None:
-                        if channel.type == discord.ChannelType.voice:
-                            print('Deleting channel...')
-                            await channel.delete(reason="The event has ended.")
+                channel = self.bot.get_channel(event.chan)
+                
+                event.finish_event()
+                self.events.save_events()
+                if channel != None:
+                    if channel.type == discord.ChannelType.voice:
+                        print('Deleting channel...')
+                        await channel.delete(reason="The event has ended.")
                             
                 #Sets event to complete but does not trigger dkp changes
                     
@@ -119,13 +118,14 @@ class GuildEvents(commands.Cog):
         if event is not False and event.status == 3:
             #Should probably check user here to make sure they exist before adding to event.
             event.commit_event()
+            self.events.save_events()
             await ctx.send('The event has finished.  Attendance DKP will now be distributed...')
             out = ''
             for player in event.players:
                 user = self.users.find_user_w(player)
                 if user is not False:
                     user.dkp += dkp_reward
-                    out += '<@'+user.id+'> '+str(dkp_reward)+' DKP Awarded to '+player+' for attending '+event.event_name+'.\n'
+                    out += user.id+': '+str(dkp_reward)+' DKP Awarded to '+player+' for attending '+event.event_name+'.\n'
                 else:
                     out += 'User not found \n'
             self.users.save_users()
