@@ -13,7 +13,7 @@ class Events:
                 result = []
                 for event in events:
                     #Need to update result to event details.
-                    levent = Event(event['id'],event['chan'],event['event_name'],event['start_date'],event['end_date'],int(event['max']),event['description'],int(event['status']),event['players'])
+                    levent = Event(event['id'],int(event['creator']),event['chan'],event['event_name'],event['start_date'],event['end_date'],int(event['max']),event['description'],int(event['status']),event['players'])
                     result.append(levent)
                 return result
         except(IOError,IndexError):
