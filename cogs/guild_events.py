@@ -72,7 +72,7 @@ class GuildEvents(commands.Cog):
                                     await userO.send("The event " + event.event_name + " is starting NOW!")
                     
             #TIME AFTER EVENT END
-            if dto_f <= datetime.datetime.now() and event.status = 2:
+            if dto_f <= datetime.datetime.now() and event.status == 2:
                 if event.status not in range(0,2):
                     channel = self.bot.get_channel(event.chan)
                     
