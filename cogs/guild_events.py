@@ -37,7 +37,7 @@ class GuildEvents(commands.Cog):
             #EVENT STARTS IN 30 ISH MINUTES NOTIFICATION
             if event.status == 0:
                 #If there is less than 30 minutes to event starting...
-                if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() < dto_f: 
+                if dto_s <= datetime.datetime.now() + datetime.timedelta(minutes=30) and datetime.datetime.now() < dto_f and event.status == 0: 
                     event.ready_event()
                     if len(event.players) == event.max: 
                         ##Make new voice channel for event
@@ -72,7 +72,7 @@ class GuildEvents(commands.Cog):
                                     await userO.send("The event " + event.event_name + " is starting NOW!")
                     
             #TIME AFTER EVENT END
-            if dto_f <= datetime.datetime.now():
+            if dto_f <= datetime.datetime.now() and event.status = 2:
                 if event.status not in range(0,2):
                     channel = self.bot.get_channel(event.chan)
                     
