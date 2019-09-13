@@ -64,6 +64,7 @@ class GuildEvents(commands.Cog):
                 #WHEN EVENT START TIME IS MET
                 if dto_s <= datetime.datetime.now() and event.status == 1:
                         event.start_event()
+                        self.events.save_events
                         for player in event.players:
                                 user = self.users.find_user_w(player)
                                 userid = int(str(user.id)[2:-1])
