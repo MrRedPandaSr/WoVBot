@@ -80,24 +80,31 @@ class Dkp(commands.Cog):
         wow_name = character
 
         saving = True
+        updating = False
 
         for user in self.users.users:   
             if user.id == usr_id:
                 await ctx.send('<@'+str(ctx.author.id)+'> You\'ve already set your main!')
                 saving = False
+                updating = True
                 #Already set main.
-                if user.wow_name == wow_name:
-                    await ctx.send('<@'+str(ctx.author.id)+'> Adding main failed, WoW name already associated to '+ user.name)
+            if user.wow_name == wow_name:
+                    await ctx.send('<@'+str(ctx.author.id)+'> That WoW Name has already been set!')
                     saving = False
-                else:
-                    await ctx.send('<@'+str(ctx.author.id)+'> Updating wow name...')
-                    saving = True
         if saving:
             self.users.add_user(usr_id,usr_name,wow_name)
             await ctx.send('<@'+str(ctx.author.id)+'> your main has been set to '+ character)
             role = discord.utils.get(ctx.author.guild.roles, name="Peon")
             #Assign peon role automatically.
             await ctx.author.add_roles(role)
+        elif updating:
+            user = self.users.find_user(ctx.author.id)
+            if user:
+                if wow_name not in self.users.users:
+                    if user.wow_name != wow_name:
+                        user.wow_name = wow_name
+                        self.users.save_users()
+                        await ctx.send('<@'+str(ctx.author.id)+'> Main updated to: '+wow_name)
     
       
     @commands.command()
