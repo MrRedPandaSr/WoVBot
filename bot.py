@@ -63,7 +63,7 @@ async def on_member_join(member):
     Triggers when a member joins the discord
     '''
     
-    await member.send("```\nWelcome to the World of Vanilla Server!\nThe first thing you should do is set your WoW Character name by typing !setmain <Charname> in any channel.\n You can then view your DKP with !dkp or transfer it with !transfer <User> <Amount>. \n For more help and info, just type !help. \n```")
+    await member.send("```\nWelcome to the World of Vanilla Server!\nThe first thing you should do is set your WoW Character name by typing !setmain Charname in any channel.\n You can then view your DKP with !dkp or transfer it with !transferdkp <User> <Amount>. \nTo see upcoming events, type !showEvents or for specific event information, type !showEvent Event-ID.\n For help creating a new event type !help newEvent.\n For more help and info, just type !help. \n```")
 
 
 ##ADMIN ONLY COMMANDS------------------------------
