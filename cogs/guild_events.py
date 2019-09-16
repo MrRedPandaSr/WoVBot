@@ -187,7 +187,7 @@ class GuildEvents(commands.Cog):
         event = self.events.find_event(event_id)
         player = self.users.find_user(ctx.author.id)
         if event is not False and player is not False and event.status in range(0,2):
-            if len(event.players) < event.max:
+            if len(event.players) != event.max:
                 player = player.wow_name
                 if self.events.join_event(event_id,player):
                     out = 'You have joined the event: '+str(event.event_name)+'\n'
