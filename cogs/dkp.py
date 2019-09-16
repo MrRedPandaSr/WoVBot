@@ -86,9 +86,12 @@ class Dkp(commands.Cog):
                 await ctx.send('<@'+str(ctx.author.id)+'> You\'ve already set your main!')
                 saving = False
                 #Already set main.
-            elif user.wow_name == wow_name:
-                await ctx.send('<@'+str(ctx.author.id)+'> Adding main failed, WoW name already associated to '+ user.name)
-                saving = False
+                if user.wow_name == wow_name:
+                    await ctx.send('<@'+str(ctx.author.id)+'> Adding main failed, WoW name already associated to '+ user.name)
+                    saving = False
+                else:
+                    await ctx.send('<@'+str(ctx.author.id)+'> Updating wow name...')
+                    saving = True
         if saving:
             self.users.add_user(usr_id,usr_name,wow_name)
             await ctx.send('<@'+str(ctx.author.id)+'> your main has been set to '+ character)

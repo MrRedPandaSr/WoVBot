@@ -91,27 +91,6 @@ class GuildEvents(commands.Cog):
 
     @commands.command()
     @commands.has_permissions(administrator=True)
-    async def newEvent(self, ctx, name:str, start:str, end:str, max:int, desc:str):
-        '''
-        Creates a new event spanning the given duration.
-        Syntax is: !newEvent "Event Name" "Start Date/Time" "End Date/Time" "max number of people" "event description"
-        Date/Time syntax should be as follows: 'Aug 26 2019  11:00PM'
-        '''
-        start_date = str(datetime.datetime.strptime(start, '%b %d %Y %I:%M%p'))
-        end_date = str(datetime.datetime.strptime(end, '%b %d %Y %I:%M%p'))
-
-
-        player = self.users.find_user(ctx.author.id).wow_name
-        print(player)
-        if player is not False:
-            new_event = self.events.add_event(ctx,name,start_date,end_date,max,desc)
-            #self.events.join_event(new_event,player)
-
-        #Return command to join the newly created event.
-        await ctx.send('A new event has been created, join it by typing ```!joinEvent '+str(new_event)+'```')
-
-    @commands.command()
-    @commands.has_permissions(administrator=True)
     async def completeEvent(self, ctx, event_id:int):
         dkp_reward = 50
         event = self.events.find_event(event_id)
@@ -147,6 +126,27 @@ class GuildEvents(commands.Cog):
   
 #End of admin only commands:----------------
 
+    #Should require peon or higher
+    @commands.command()
+    async def newEvent(self, ctx, name:str, start:str, end:str, max:int, desc:str):
+        '''
+        Creates a new event spanning the given duration.
+        Syntax is: !newEvent "Event Name" "Start Date/Time" "End Date/Time" "max number of people" "event description"
+        Date/Time syntax should be as follows: 'Aug 26 2019  11:00PM'
+        '''
+        start_date = str(datetime.datetime.strptime(start, '%b %d %Y %I:%M%p'))
+        end_date = str(datetime.datetime.strptime(end, '%b %d %Y %I:%M%p'))
+
+
+        player = self.users.find_user(ctx.author.id).wow_name
+        print(player)
+        if player is not False:
+            new_event = self.events.add_event(ctx,name,start_date,end_date,max,desc)
+            #self.events.join_event(new_event,player)
+
+        #Return command to join the newly created event.
+        await ctx.send('A new event has been created, join it by typing ```!joinEvent '+str(new_event)+'```')
+    
     @commands.command()
     async def showEvent(self, ctx, event_id:int):
         '''
