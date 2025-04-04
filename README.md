@@ -1,5 +1,5 @@
-# WoVBot
-A discord bot made for WoW Classic Guilds.  Made with <3 by Swooperior!
+# Pandas Before Pixel Bot
+A discord bot made for Path of Exile 2 Guilds. 
 
 ## Commands
 
